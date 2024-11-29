@@ -1,59 +1,44 @@
-FROM golang:alpine AS builder
+FROM jlesage/baseimage-gui:ubuntu-24.04-v4
 
-WORKDIR /apps
+# 替换APT源为清华源
+RUN sed -i 's@/archive.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/@g' /etc/apt/sources.list.d/ubuntu.sources \
+    && sed -i 's@/security.ubuntu.com/@/mirrors.tuna.tsinghua.edu.cn/ubuntu/@g' /etc/apt/sources.list.d/ubuntu.sources
 
-RUN apk add --no-cache git
+# 安装必要依赖
+RUN apt update && \
+    apt install -y language-pack-zh-hans fonts-noto-cjk-extra curl \
+    shared-mime-info desktop-file-utils libxcb1 libxcb-icccm4 libxcb-image0 \
+    libxcb-keysyms1 libxcb-randr0 libxcb-render0 libxcb-render-util0 libxcb-shape0 \
+    libxcb-shm0 libxcb-sync1 libxcb-util1 libxcb-xfixes0 libxcb-xkb1 libxcb-xinerama0 \
+    libxcb-xkb1 libxcb-glx0 libatk1.0-0 libatk-bridge2.0-0 libc6 libcairo2 libcups2 \
+    libdbus-1-3 libfontconfig1 libgbm1 libgcc1 libgdk-pixbuf2.0-0 libglib2.0-0 \
+    libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 \
+    libxcomposite1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 \
+    libxss1 libxtst6 libatomic1 libxcomposite1 libxrender1 libxrandr2 libxkbcommon-x11-0 \
+    libfontconfig1 libdbus-1-3 libnss3 libx11-xcb1 libasound2t64 && \
+    # 清理工作
+    apt clean && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/wy2919/go-network-monitor.git .
+# 生成微信图标
+RUN APP_ICON_URL=https://res.wx.qq.com/a/wx_fed/assets/res/NTI4MWU5.ico && \
+    install_app_icon.sh "$APP_ICON_URL"
 
-RUN go mod init main && go mod tidy
+# 设置应用名称
+RUN set-cont-env APP_NAME "Wechat"
 
-RUN go build -o /apps/main /apps/main.go
+# 下载微信安装包
+RUN curl -O "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb" && \
+    dpkg -i WeChatLinux_x86_64.deb 2>&1 | tee /tmp/wechat_install.log && \
+    rm WeChatLinux_x86_64.deb
 
-FROM alpine:latest
+RUN echo '#!/bin/sh' > /startapp.sh && \
+    echo 'exec /usr/bin/wechat' >> /startapp.sh && \
+    chmod +x /startapp.sh
 
-WORKDIR /apps
+VOLUME /root/.xwechat
+VOLUME /root/xwechat_files
+VOLUME /root/downloads
 
-COPY --from=builder /apps/main .
-
-RUN apk update && apk add --no-cache openssh-client sshpass dbus tzdata && mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && chmod +x main
-
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
-
-ENV INTERVAL=30 \
-    PARDON=600 \
-    NAME="" \
-    HOST="" \
-    MODEL=1 \
-    GB=1000000 \
-    INTERFACE="ens4" \
-    WXKEY="" \
-    SHUTDOWN="no" \
-    SHUTDOWNTYPE="dbus" \
-    SSHHOST="" \
-    SSHPWD="" \
-    SSHPORT=22 \
-    SSHRUN="shutdown -h now" \
-    SMTPHOST="smtp.qq.com:587" \
-    SMTPEMAIL="" \
-    SMTPPWD=""
-
-CMD ./main \
-  -interval $INTERVAL \
-  -pardon $PARDON \
-  -name $NAME \
-  -host $HOST \
-  -model $MODEL \
-  -gb $GB \
-  -interface $INTERFACE \
-  -wxKey $WXKEY \
-  -shutdown $SHUTDOWN \
-  -shutdownType $SHUTDOWNTYPE \
-  -sshHost $SSHHOST \
-  -sshPwd $SSHPWD \
-  -sshPort $SSHPORT \
-  -sshRun "$SSHRUN" \
-  -smtpHost $SMTPHOST \
-  -smtpEmail $SMTPEMAIL \
-  -smtpPwd $SMTPPWD
+# 配置微信版本号
+RUN set-cont-env APP_VERSION "$(grep -o 'Unpacking wechat ([0-9.]*)' /tmp/wechat_install.log | sed 's/Unpacking wechat (\(.*\))/\1/')"
