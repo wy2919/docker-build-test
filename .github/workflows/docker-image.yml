@@ -9,12 +9,10 @@ on:
   # 可以手动触发
   workflow_dispatch:
     inputs:   # 手动触发时自定义参数
-      logLevel:
-        description: "Log level"
+      changku:
+        description: "推送到的仓库名称"
         required: true
-        default: "warning"
-      tags:
-        description: "Test scenario tags"
+        default: "tessssss"
 # 任务
 jobs:
   buildx:
@@ -63,4 +61,4 @@ jobs:
           push: true
           # 给清单打上多个标签 打一个新标签，再覆盖latest即可推送2个镜像
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/network-monitor:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.changku }}:latest
