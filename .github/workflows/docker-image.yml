@@ -9,6 +9,16 @@ on:
   # 可以手动触发
   workflow_dispatch:
     inputs:   # 手动触发时自定义参数
+      jiagou:  
+          description: '选择编译架构'
+          required: true
+          default: 'linux/amd64'
+          type: choice
+          options:
+            - linux/amd64
+            - linux/arm64
+            - linux/arm/v7
+            - linux/arm/v6
       changku:
         description: "推送到的仓库名称"
         required: true
@@ -57,7 +67,7 @@ jobs:
           # 设置Dockerfile位置
           file: ./Dockerfile
           # 所需要的体系结构，可以在 Available platforms 步骤中获取所有的可用架构
-          platforms: linux/amd64,linux/arm64/v8
+          platforms: ${{ join(inputs.jiagou, ',') }} 
           push: true
           # 给清单打上多个标签 打一个新标签，再覆盖latest即可推送2个镜像
           tags: |
