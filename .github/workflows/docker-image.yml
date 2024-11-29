@@ -22,6 +22,10 @@ on:
         description: "推送到的仓库名称"
         required: true
         default: "tessssss"
+      versions:
+        description: "镜像版本"
+        required: true
+        default: "latest"
 # 任务
 jobs:
   buildx:
@@ -70,4 +74,4 @@ jobs:
           push: true
           # 给清单打上多个标签 打一个新标签，再覆盖latest即可推送2个镜像
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.changku }}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ inputs.changku }}:${{ inputs.latest }}
