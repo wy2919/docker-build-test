@@ -3,9 +3,9 @@ name: build docker image
 # 触发方式
 on:
   # push触发，如果main分支有push就自动触发构建
-  push:
-    branches:
-      - main
+  # push:
+    # branches:
+      # - main
   # 可以手动触发
   workflow_dispatch:
     inputs:   # 手动触发时自定义参数
