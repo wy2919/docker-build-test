@@ -9,7 +9,7 @@ on:
   # 可以手动触发
   workflow_dispatch:
     inputs:   # 手动触发时自定义参数
-      jiagou:  
+      jiagou:  # 架构选择
           description: '选择编译架构'
           required: true
           default: 'linux/amd64'
