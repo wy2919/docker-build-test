@@ -17,8 +17,7 @@ on:
           options:
             - linux/amd64
             - linux/arm64
-            - linux/arm/v7
-            - linux/arm/v6
+            - linux/amd64,linux/arm64
       changku:
         description: "推送到的仓库名称"
         required: true
@@ -67,7 +66,7 @@ jobs:
           # 设置Dockerfile位置
           file: ./Dockerfile
           # 所需要的体系结构，可以在 Available platforms 步骤中获取所有的可用架构
-          platforms: ${{ join(inputs.jiagou, ',') }} 
+          platforms: ${{ inputs.jiagou }}
           push: true
           # 给清单打上多个标签 打一个新标签，再覆盖latest即可推送2个镜像
           tags: |
