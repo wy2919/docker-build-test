@@ -53,7 +53,7 @@ CMD ./main \
   -sshHost $SSHHOST \
   -sshPwd $SSHPWD \
   -sshPort $SSHPORT \
-  -sshRun $SSHRUN \
+  -sshRun "$SSHRUN" \
   -smtpHost $SMTPHOST \
   -smtpEmail $SMTPEMAIL \
   -smtpPwd $SMTPPWD
