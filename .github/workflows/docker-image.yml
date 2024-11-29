@@ -64,4 +64,3 @@ jobs:
           # 给清单打上多个标签 打一个新标签，再覆盖latest即可推送2个镜像
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/network-monitor:latest
-            #${{ secrets.DOCKERHUB_USERNAME }}/network-monitor:${{ steps.date.outputs.today }}
