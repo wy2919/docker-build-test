@@ -1,19 +1,31 @@
-FROM python:3.8
+FROM python:3.6
 
-# RUN apt update -y && apt install -y sudo apt-utils wget python3-pip python3-venv python3-dev python3-pandas git curl
-COPY ./install_ta_lib.sh /install_ta_lib.sh
+RUN apt-get update && apt-get install -y \
+    gfortran \
+    libfreetype6-dev \
+    libhdf5-dev \
+    liblapack-dev \
+    libopenblas-dev \
+    libpng-dev \
+  && rm -rf /var/lib/apt/lists/* \
+  && curl -L http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
+  | tar xvz \
+  && cd /ta-lib \
+  && ./configure --prefix=/usr \
+  && make \
+  && make install \
+  && pip install --upgrade pip
 
- RUN bash install_ta_lib.sh
+WORKDIR /TA-Lib
+COPY . .
 
-# ENV PYTHON_PACKAGES="\
-#    numpy \
-#    matplotlib \
-#    pandas \
-#    " 
-
-# 安装pip依赖
-# RUN pip3 install --no-cache-dir $PYTHON_PACKAGES
-
-# RUN pip3 cache purge
-
-
+RUN python setup.py egg_info \
+  && python setup.py --help \
+  && pip install -e . \
+  && pip -V \
+  && pip freeze \
+  && pip show numpy cython TA_Lib \
+  && python -c 'import numpy; import talib; close = numpy.random.random(100); output = talib.SMA(close); print(output)' \
+  && pip install -r requirements_dev.txt \
+  && pip install -r requirements_test.txt \
+  && nosetests -w .
