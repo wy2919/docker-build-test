@@ -61,7 +61,7 @@ ENV PYTHON_PACKAGES="\
 
 RUN apk add --no-cache --virtual build-dependencies python3 \
     && apk add --virtual build-runtime \
-    build-base python3-dev openblas-dev freetype-dev pkgconfig gfortran 
+    build-base python3-dev py3-pip openblas-dev freetype-dev pkgconfig gfortran 
 
 # 创建符号链接 (locale.h)
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
