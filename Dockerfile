@@ -61,6 +61,8 @@ ENV PYTHON_PACKAGES="\
 
 RUN apk add --no-cache --virtual build-dependencies python3 \
     && apk add --virtual build-runtime \
-    build-base python3-dev openblas-dev freetype-dev pkgconfig gfortran 
+    build-base python3-dev openblas-dev freetype-dev pkgconfig gfortran \
+    && ln -s /usr/include/locale.h /usr/include/xlocale.h \
+    && python3 -m ensurepip 
     
 CMD ["python3"]
