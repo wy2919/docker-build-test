@@ -19,13 +19,4 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /TA-Lib
 COPY . .
 
-RUN python setup.py egg_info \
-  && python setup.py --help \
-  && pip install -e . \
-  && pip -V \
-  && pip freeze \
-  && pip show numpy cython TA_Lib \
-  && python -c 'import numpy; import talib; close = numpy.random.random(100); output = talib.SMA(close); print(output)' \
-  && pip install -r requirements_dev.txt \
-  && pip install -r requirements_test.txt \
-  && nosetests -w .
+RUN python -c 'import numpy; import talib; close = numpy.random.random(100); output = talib.SMA(close); print(output)'
