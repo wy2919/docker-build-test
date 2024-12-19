@@ -20,4 +20,5 @@ WORKDIR /TA-Lib
 COPY . .
 
 RUN pip install numpy==1.16.2
+RUN pip install cython
 RUN python -c 'import numpy; import talib; close = numpy.random.random(100); output = talib.SMA(close); print(output)'
