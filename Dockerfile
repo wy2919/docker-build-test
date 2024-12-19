@@ -12,8 +12,8 @@ ENV PYTHON_PACKAGES="\
     " 
 
 # 安装pip依赖
-RUN pip3 install --no-cache-dir $PYTHON_PACKAGES
+# RUN pip3 install --no-cache-dir $PYTHON_PACKAGES
 
-RUN pip3 cache purge
+# RUN pip3 cache purge
 
 
