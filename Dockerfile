@@ -69,6 +69,8 @@ RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 # 安装 pip 并升级
 #RUN python3 -m ensurepip
 RUN rm -r /usr/lib/python*/ensurepip
+RUN pip3 install requests
+
 RUN pip3 install --upgrade pip setuptools
 
 # 创建 python 和 pip 的符号链接 (通常不需要，基础镜像已包含)
