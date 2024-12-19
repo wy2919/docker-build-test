@@ -19,4 +19,5 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /TA-Lib
 COPY . .
 
+RUN pip install numpy==1.16.2
 RUN python -c 'import numpy; import talib; close = numpy.random.random(100); output = talib.SMA(close); print(output)'
