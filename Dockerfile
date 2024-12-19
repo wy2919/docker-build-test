@@ -1,17 +1,9 @@
-# 使用python:3.8.18-slim作为基础镜像
-FROM python:3.8.18-slim
+FROM debian:latest
 
-# 安装Git
-RUN apt update && apt install wget -y && apt-get install fontconfig -y && apt clean
+RUN apt update -y && apt install -y sudo apt-utils wget python3-pip python3-venv python3-dev python3-pandas git curl
+COPY ./install_ta_lib.sh /install_ta_lib.sh
 
-# 清理缓存
-RUN rm -rf /var/cache/apk/*
-
-# 安装字体文件
-RUN wget -O /usr/share/fonts/SimHei.ttf https://github.com/StellarCN/scp_zh/raw/master/fonts/SimHei.ttf && fc-cache -f -v
-
-# 设置工作目录
-WORKDIR /root
+RUN bash install_ta_lib.sh
 
 ENV PYTHON_PACKAGES="\
     numpy \
@@ -25,7 +17,3 @@ RUN pip install --no-cache-dir $PYTHON_PACKAGES
 RUN pip cache purge
 
 
-# 每次启动前都拉取最新代码
-CMD ["python3"]
-
-# docker build -f Dockerfile-debian -t wx-bot .
