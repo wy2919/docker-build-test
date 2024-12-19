@@ -1,6 +1,5 @@
-FROM alpine:latest
+FROM python:3.9-alpine
 
-LABEL MAINTAINER="Faizan Bashir <faizan.ibn.bashir@gmail.com>"
 
 # Linking of locale.h as xlocale.h
 # This is done to ensure successfull install of python numpy package
@@ -59,23 +58,23 @@ ENV PYTHON_PACKAGES="\
     nltk \
     " 
 
-RUN apk add --no-cache --virtual build-dependencies python3 \
+RUN apk add --no-cache --virtual build-dependencies \
     && apk add --virtual build-runtime \
-    build-base python3-dev py3-pip openblas-dev freetype-dev pkgconfig gfortran 
+    build-base openblas-dev freetype-dev pkgconfig gfortran 
 
 # 创建符号链接 (locale.h)
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 # 安装 pip 并升级
 #RUN python3 -m ensurepip
-RUN rm -r /usr/lib/python*/ensurepip
-RUN pip3 install requests
+#RUN rm -r /usr/lib/python*/ensurepip
+#RUN pip3 install requests
 
 RUN pip3 install --upgrade pip setuptools
 
 # 创建 python 和 pip 的符号链接 (通常不需要，基础镜像已包含)
-RUN ln -sf /usr/bin/python3 /usr/bin/python
-RUN ln -sf pip3 /usr/bin/pip
+#RUN ln -sf /usr/bin/python3 /usr/bin/python
+#RUN ln -sf pip3 /usr/bin/pip
 
 # 安装 Python 包
 RUN pip install --no-cache-dir $PYTHON_PACKAGES
