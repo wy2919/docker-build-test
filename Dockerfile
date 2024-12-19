@@ -59,6 +59,8 @@ ENV PYTHON_PACKAGES="\
     nltk \
     " 
 
-RUN apk add --no-cache --virtual build-dependencies python3 
-
+RUN apk add --no-cache --virtual build-dependencies python3 \
+    && apk add --virtual build-runtime \
+    build-base python3-dev openblas-dev freetype-dev pkgconfig gfortran 
+    
 CMD ["python3"]
