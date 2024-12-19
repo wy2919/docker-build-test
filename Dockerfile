@@ -83,7 +83,7 @@ RUN pip install --no-cache-dir $PYTHON_PACKAGES
 RUN apk del build-dependencies
 
 # 安装其他系统依赖 (如果需要)
-RUN apk add --no-cache $PACKAGES
+# RUN apk add --no-cache $PACKAGES
 
 # 清理 apk 缓存
 RUN rm -rf /var/cache/apk/*
