@@ -67,7 +67,7 @@ RUN apk add --no-cache --virtual build-dependencies python3 \
 RUN ln -s /usr/include/locale.h /usr/include/xlocale.h
 
 # 安装 pip 并升级
-RUN python3 -m ensurepip
+#RUN python3 -m ensurepip
 RUN rm -r /usr/lib/python*/ensurepip
 RUN pip3 install --upgrade pip setuptools
 
