@@ -48,7 +48,9 @@ ENV PYTHON_PACKAGES="\
 RUN pip install --no-cache-dir $PYTHON_PACKAGES
 
 # 清理构建依赖
-RUN apk del build-dependencies
+#RUN apk del build-dependencies
+
+
 
 # 安装其他系统依赖 (如果需要)
 # RUN apk add --no-cache $PACKAGES
