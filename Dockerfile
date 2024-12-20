@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     fontconfig \
     wget \
+    curl \
+    gcc \
+    make \
   && rm -rf /var/lib/apt/lists/* \
   $$ apt clean
 
