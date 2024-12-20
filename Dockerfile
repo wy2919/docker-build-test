@@ -16,10 +16,17 @@ RUN curl -L http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
   && cd /ta-lib \
   && ./configure --prefix=/usr \
   && make \
-  && make install 
+  && make install \
+  && rm -R /ta-lib
 
 
-RUN pip install --no-cache-dir numpy
-RUN pip install --no-cache-dir cython
-RUN pip install --no-cache-dir Ta-Lib
+
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir numpy==2.0.2 \
+    && pip install --no-cache-dir ta-lib==0.5.1 \
+    && pip install --no-cache-dir matplotlib \
+    && pip install --no-cache-dir pandas \
+    && pip cache purge
+    
+
 RUN python -c 'import numpy; import talib; close = numpy.random.random(100); output = talib.SMA(close); print(output)'
