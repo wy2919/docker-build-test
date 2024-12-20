@@ -24,8 +24,8 @@ RUN curl -L http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir numpy==2.0.2 \
     && pip install --no-cache-dir ta-lib==0.5.1 \
-    && pip install --no-cache-dir matplotlib \
-    && pip install --no-cache-dir pandas \
+    && pip install --no-cache-dir matplotlib==3.9.4 \
+    && pip install --no-cache-dir pandas==2.2.3 \
     && pip cache purge
     
 
