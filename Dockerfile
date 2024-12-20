@@ -20,8 +20,11 @@ RUN apt-get update && apt-get install -y \
   && make \
   && make install \
   && rm -R /ta-lib
-  && rm -rf /var/lib/apt/lists/* \
-  && apt clean
+  && apt purge -y wget curl gcc make \
+  && apt -y autoremove \
+  && apt clean \
+  && rm -rf /var/lib/apt/lists/* 
+
 
 # 安装字体文件
 RUN wget -O /usr/share/fonts/SimHei.ttf https://github.com/StellarCN/scp_zh/raw/master/fonts/SimHei.ttf && fc-cache -f -v
