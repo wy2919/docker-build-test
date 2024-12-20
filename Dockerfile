@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y \
   && ./configure --prefix=/usr \
   && make \
   && make install \
-  && rm -R /ta-lib
+  && rm -R /ta-lib \
   && apt purge -y wget curl gcc make \
   && apt -y autoremove \
   && apt clean \
