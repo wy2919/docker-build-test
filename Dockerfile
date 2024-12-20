@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
   && make \
   && make install \
   && rm -R /ta-lib \
-  && apt purge -y wget curl gcc make \
+  && apt purge -y curl gcc make \
   && apt -y autoremove \
   && apt clean \
   && rm -rf /var/lib/apt/lists/* 
