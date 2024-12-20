@@ -10,8 +10,8 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     fontconfig \
     wget \
-    apt clean \
-  && rm -rf /var/lib/apt/lists/* 
+  && rm -rf /var/lib/apt/lists/* \
+  $$ apt clean
 
 # 安装字体文件
 RUN wget -O /usr/share/fonts/SimHei.ttf https://github.com/StellarCN/scp_zh/raw/master/fonts/SimHei.ttf && fc-cache -f -v
