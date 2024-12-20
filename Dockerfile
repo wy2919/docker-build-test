@@ -13,20 +13,27 @@ RUN apt-get update && apt-get install -y \
     curl \
     gcc \
     make \
-  && rm -rf /var/lib/apt/lists/* \
-  $$ apt clean
-
-# 安装字体文件
-RUN wget -O /usr/share/fonts/SimHei.ttf https://github.com/StellarCN/scp_zh/raw/master/fonts/SimHei.ttf && fc-cache -f -v
-
-# 编译安装ta-lib
-RUN curl -L http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
+&& curl -L http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
   | tar xvz \
   && cd /ta-lib \
   && ./configure --prefix=/usr \
   && make \
   && make install \
   && rm -R /ta-lib
+  && rm -rf /var/lib/apt/lists/* \
+  && apt clean
+
+# 安装字体文件
+RUN wget -O /usr/share/fonts/SimHei.ttf https://github.com/StellarCN/scp_zh/raw/master/fonts/SimHei.ttf && fc-cache -f -v
+
+# 编译安装ta-lib
+# RUN curl -L http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
+#  | tar xvz \
+#  && cd /ta-lib \
+#  && ./configure --prefix=/usr \
+#  && make \
+#  && make install \
+#  && rm -R /ta-lib
 
 
 RUN pip install --upgrade pip \
