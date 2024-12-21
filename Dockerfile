@@ -26,10 +26,10 @@ RUN apt-get update && \
     libsqlite3-dev \
     uuid-dev \
     pkg-config \
-    libfreetype6-dev \  # 用于 matplotlib 的字体渲染
-    libpng-dev \        # 用于 matplotlib 的图形渲染
+    libfreetype6-dev \  
+    libpng-dev \        
     && apt-get clean && \
-    rm -rf /var/lib/apt/lists/*  # 清理 apt 缓存
+    rm -rf /var/lib/apt/lists/*  
 
 # 下载并编译安装 TA-Lib
 RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
@@ -39,12 +39,12 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
     make && \
     make install && \
     cd .. && \
-    rm -rf ta-lib ta-lib-0.4.0-src.tar.gz  # 清理 TA-Lib 源码
+    rm -rf ta-lib ta-lib-0.4.0-src.tar.gz  
 
 # 安装 Python 依赖项
 RUN pip3 install --upgrade pip && \
     pip3 install numpy pandas matplotlib TA-Lib && \
-    pip3 cache purge  # 清理 pip 缓存
+    pip3 cache purge  
 
 # 设置工作目录
 WORKDIR /app
