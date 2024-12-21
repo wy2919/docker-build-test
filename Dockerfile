@@ -41,9 +41,10 @@ RUN wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz && \
     cd .. && \
     rm -rf ta-lib ta-lib-0.4.0-src.tar.gz  
 
-# 安装 Python 依赖项
+# 升级 pip 并安装 Python 依赖项
 RUN pip3 install --upgrade pip && \
-    pip3 install numpy pandas matplotlib TA-Lib 
+    pip3 install numpy pandas matplotlib TA-Lib && \
+    rm -rf /root/.cache/pip
 
 # 设置工作目录
 WORKDIR /app
