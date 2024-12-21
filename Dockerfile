@@ -11,17 +11,19 @@ RUN apt-get update && \
     wget \
     libtool \
     pkg-config \
-    libfreetype6-dev \  
+    libfreetype6-dev \ 
     libpng-dev \        
-    fontconfig \        
+    fontconfig \       
     software-properties-common \  
     && add-apt-repository ppa:deadsnakes/ppa \
     && apt-get update && \
     apt-get install -y python3.9 python3.9-dev python3.9-distutils \
+    && apt-get remove -y python3.8 python3-pip \  
+    && apt-get autoremove -y \
     && apt-get clean && \
     rm -rf /var/lib/apt/lists/*  
 
-# 安装 pip
+# 安装 pip 并确保与 python3.9 关联
 RUN wget https://bootstrap.pypa.io/get-pip.py && \
     python3.9 get-pip.py && \
     rm get-pip.py
