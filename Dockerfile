@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM golang:alpine AS builder
+FROM --platform=$BUILDPLATFORM golang:1.24-alpine3.20 AS builder
 
 WORKDIR /apps
 
@@ -13,13 +13,13 @@ ARG TARGETARCH
 
 RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /apps/main /apps/main.go
 
-FROM --platform=$TARGETPLATFORM alpine:latest
+FROM --platform=$TARGETPLATFORM alpine:3.20
 
 WORKDIR /apps
 
 COPY --from=builder /apps/main .
 
-RUN apk update && apk add --no-cache docker-cli && chmod +x main
+RUN apk update && apk add --no-cache docker-cli tzdata && chmod +x main
 
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
