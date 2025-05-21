@@ -4,7 +4,7 @@ WORKDIR /apps
 
 RUN apk add --no-cache git
 
-RUN git clone https://github.com/wy2919/go-jijin-monitor.git .
+RUN git clone https://github.com/wy2919/docker-build-test.git .
 
 RUN go mod init main && go mod tidy
 
@@ -19,7 +19,7 @@ WORKDIR /apps
 
 COPY --from=builder /apps/main .
 
-RUN apk update && apk add --no-cache openssh-client sshpass dbus tzdata && chmod +x main
+RUN apk update && apk add --no-cache docker-cli && chmod +x main
 
 RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
     echo "Asia/Shanghai" > /etc/timezone
@@ -32,11 +32,13 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
         echo "arm平台"; \
     fi
 
-ENV SECOND=30 \
-    CODES="" \
-    WXKEY=""
+#ENV SECOND=30 \
+#    CODES="" \
+#    WXKEY=""
 
-CMD ./main \
-  -second $SECOND \
-  -codes $CODES \
-  -wxkey $WXKEY
+#CMD ./main \
+#  -second $SECOND \
+#  -codes $CODES \
+#  -wxkey $WXKEY
+
+CMD ./main
