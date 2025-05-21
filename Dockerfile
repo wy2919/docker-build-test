@@ -11,7 +11,7 @@ RUN go mod init main && go mod tidy
 ARG TARGETOS
 ARG TARGETARCH
 
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /apps/main /apps/dingtou-jiankong.go
+RUN GOOS=$TARGETOS GOARCH=$TARGETARCH go build -o /apps/main /apps/main.go
 
 FROM --platform=$TARGETPLATFORM alpine:latest
 
