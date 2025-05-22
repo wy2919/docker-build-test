@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net/http"
@@ -13,6 +15,38 @@ import (
 
 	"github.com/gin-gonic/gin"
 )
+
+// 全局变量存储生成的密钥
+var apiSecretKey string
+
+// 初始化函数
+func init() {
+	// 生成10字节的随机密钥
+	key := make([]byte, 10)
+	if _, err := rand.Read(key); err != nil {
+		log.Fatalf("密钥生成失败: %v", err)
+	}
+	apiSecretKey = base64.URLEncoding.EncodeToString(key)
+	log.Printf("API验证密钥已生成: %s", apiSecretKey)
+}
+
+// 验证请求中的密钥
+func validateSecret(c *gin.Context) bool {
+	// 从Header获取密钥
+	reqKey := c.GetHeader("X-API-Key")
+	if reqKey == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "缺少API密钥"})
+		return false
+	}
+
+	// 验证密钥
+	if reqKey != apiSecretKey {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "无效的API密钥"})
+		return false
+	}
+
+	return true
+}
 
 // 公共文件保存方法
 func saveFile(c *gin.Context, formField string, targetDir string) (string, error) {
@@ -64,6 +98,13 @@ func execDockerAsync(arg ...string) {
 
 // 部署Yaml处理器
 func deployYamlHandler(c *gin.Context) {
+
+	// 验证密钥
+	is := validateSecret(c)
+	if !is {
+		return
+	}
+
 	// 步骤1：获取Stack名称
 	stackName := c.PostForm("stackName")
 	if strings.TrimSpace(stackName) == "" {
@@ -91,6 +132,12 @@ func deployYamlHandler(c *gin.Context) {
 
 // 部署tar处理器
 func deployTarHandler(c *gin.Context) {
+
+	// 验证密钥
+	is := validateSecret(c)
+	if !is {
+		return
+	}
 
 	// 获取部署的目录
 	targetDir := c.PostForm("targetDir")
