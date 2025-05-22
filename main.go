@@ -26,7 +26,7 @@ func init() {
 	if _, err := rand.Read(key); err != nil {
 		log.Fatalf("密钥生成失败: %v", err)
 	}
-	apiSecretKey = base64.URLEncoding.EncodeToString(key)
+	apiSecretKey = base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(key)
 	log.Printf("API验证密钥已生成: %s", apiSecretKey)
 }
 
@@ -119,7 +119,7 @@ func deployYamlHandler(c *gin.Context) {
 	}
 
 	// 步骤3：异步执行部署
-	execDockerAsync("stack", "deploy","--with-registry-auth", "-c", yamlPath, stackName)
+	execDockerAsync("stack", "deploy", "-c", yamlPath, "--with-registry-auth", stackName)
 
 	// 步骤4：返回响应
 	c.JSON(http.StatusOK, gin.H{
