@@ -83,11 +83,7 @@ func execDockerAsync(arg ...string) {
 		// 步骤1：拼装命令参数
 		cmd := exec.Command("docker", arg...)
 
-		// 步骤2：捕获命令输出
-		var stderr bytes.Buffer
-		cmd.Stderr = &stderr
-
-		// 步骤3：执行并记录日志
+		// 步骤2：执行并捕获命令的联合输出 (stdout + stderr)
 		if output, err := cmd.CombinedOutput(); err != nil {
 			log.Printf("Docker命令执行失败: 命令:%v | 错误:%v | 输出:%s", cmd.Args, err, string(output))
 		} else {
