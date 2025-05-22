@@ -119,7 +119,7 @@ func deployYamlHandler(c *gin.Context) {
 	}
 
 	// 步骤3：异步执行部署
-	execDockerAsync("stack", "deploy", "-c", yamlPath, stackName)
+	execDockerAsync("stack", "deploy","--with-registry-auth", "-c", yamlPath, stackName)
 
 	// 步骤4：返回响应
 	c.JSON(http.StatusOK, gin.H{
