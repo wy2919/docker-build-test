@@ -2,8 +2,6 @@ package main
 
 import (
 	"bytes"
-	"crypto/rand"
-	"encoding/base64"
 	"flag"
 	"fmt"
 	"log"
@@ -19,18 +17,6 @@ import (
 
 // 全局变量存储生成的密钥
 var apiSecretKey string
-
-// 生成密钥
-func getApiKet() string {
-	// 生成10字节的随机密钥
-	key := make([]byte, 10)
-	if _, err := rand.Read(key); err != nil {
-		log.Fatalf("密钥生成失败: %v", err)
-	}
-	apiSecretKey = base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(key)
-	log.Printf("API验证密钥已生成: %s", apiSecretKey)
-	return apiSecretKey
-}
 
 // 验证请求中的密钥
 func validateSecret(c *gin.Context) bool {
@@ -122,9 +108,7 @@ func deployYamlHandler(c *gin.Context) {
 	// 步骤4：返回响应
 	c.JSON(http.StatusOK, gin.H{
 		"status":  "部署指令已下发",
-		"detail":  "后台异步处理中",
 		"stack":   stackName,
-		"monitor": fmt.Sprintf("/stacks/%s", stackName), // 监控端点示例
 	})
 }
 
@@ -298,7 +282,7 @@ func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	// 通过-k命令行参数指定API密钥
-	keyPtr := flag.String("k", getApiKet(), "API验证密钥")
+	keyPtr := flag.String("k", "", "API验证密钥")
 	flag.Parse()
 	if *keyPtr == "" {
 		log.Fatal("API验证密钥不能为空，请通过-k参数指定")
