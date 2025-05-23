@@ -32,6 +32,8 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
         echo "arm平台"; \
     fi
 
+ENV KEY=""
+
 #ENV SECOND=30 \
 #    CODES="" \
 #    WXKEY=""
@@ -41,4 +43,4 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
 #  -codes $CODES \
 #  -wxkey $WXKEY
 
-CMD ./main
+CMD ./main -k $KEY
