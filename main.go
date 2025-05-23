@@ -107,8 +107,8 @@ func deployYamlHandler(c *gin.Context) {
 
 	// 步骤4：返回响应
 	c.JSON(http.StatusOK, gin.H{
-		"status":  "部署指令已下发",
-		"stack":   stackName,
+		"status": "部署指令已下发",
+		"stack":  stackName,
 	})
 }
 
@@ -173,8 +173,7 @@ func atomicDeploy(tarPath, targetDir, tempDir, backupDir string) error {
 		return fmt.Errorf("解压过程失败: %v", err)
 	}
 
-	// 阶段2：执行部署切换
-	// 步骤3：备份现有版本
+	// 步骤3：原子重命名备份现有版本，先把当前网站目录重命名为backupDir备份名称，确保targetDir为空
 	if _, err := os.Stat(targetDir); err == nil {
 		log.Printf("开始备份当前版本: %s -> %s", targetDir, backupDir)
 		if err := os.Rename(targetDir, backupDir); err != nil {
@@ -186,7 +185,10 @@ func atomicDeploy(tarPath, targetDir, tempDir, backupDir string) error {
 		}()
 	}
 
-	// 步骤4：原子切换新版本
+	// 步骤4：原子切换新版本(已打开文件不受干扰，直到文件句柄关闭前，旧版的文件内容依然是可读的，不会因为目录切换而中断)
+	// 使用tempDir目录内容重命名替换targetDir目录内容，要确保targetDir为空(上一步替换为备份名称)
+	// os.Rename：这并不是“拷贝”，而是真正的目录重命名，因而速度很快且不会产生额外的磁盘占用
+	// 常用于零停机部署，因为新版本可以被原子地切换到目标位置，而不影响正在使用旧版本文件的进程（这些进程持有的打开描述符会继续使用旧文件，直到它们关闭）
 	log.Printf("执行目录切换: %s -> %s", tempDir, targetDir)
 	if err := os.Rename(tempDir, targetDir); err != nil {
 		// 尝试恢复备份
@@ -212,8 +214,9 @@ func extractTar(tarPath string, targetDir string) error {
 	}
 
 	// 解压步骤1：构建命令参数
+	//	解压："tar -czvf dist.tar.gz ./*"
 	args := []string{
-		"xf", tarPath,
+		"xzf", tarPath,
 		"-C", absTargetDir,
 		"--no-same-permissions",
 		"--strip-components=0",
