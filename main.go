@@ -2,8 +2,7 @@ package main
 
 import (
 	"bytes"
-	"crypto/rand"
-	"encoding/base64"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -18,17 +17,6 @@ import (
 
 // 全局变量存储生成的密钥
 var apiSecretKey string
-
-// 初始化函数
-func init() {
-	// 生成10字节的随机密钥
-	key := make([]byte, 10)
-	if _, err := rand.Read(key); err != nil {
-		log.Fatalf("密钥生成失败: %v", err)
-	}
-	apiSecretKey = base64.URLEncoding.WithPadding(base64.NoPadding).EncodeToString(key)
-	log.Printf("API验证密钥已生成: %s", apiSecretKey)
-}
 
 // 验证请求中的密钥
 func validateSecret(c *gin.Context) bool {
@@ -291,8 +279,17 @@ func isExecutable(ext string) bool {
 }
 
 func main() {
+
 	// 初始化日志配置
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+
+	// 通过-k命令行参数指定API密钥
+	keyPtr := flag.String("k", "", "API验证密钥")
+	flag.Parse()
+	if *keyPtr == "" {
+		log.Fatal("API验证密钥不能为空，请通过-k参数指定")
+	}
+	apiSecretKey = *keyPtr
 
 	// 创建路由引擎
 	r := gin.Default()
