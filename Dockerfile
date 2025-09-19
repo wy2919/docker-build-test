@@ -1,7 +1,8 @@
 FROM --platform=$BUILDPLATFORM golang:1.24-alpine3.20 AS builder
 ENV CGO_ENABLED=0
 
-RUN GOOS=$TARGETOS GOARCH=$TARGETARCH
+ENV GOOS=$TARGETOS
+ENV GOARCH=$TARGETARCH
 
 RUN apk add --no-cache curl build-base git libcap && \
     git clone https://github.com/fatedier/frp.git /root/frp && \
